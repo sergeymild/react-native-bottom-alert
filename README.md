@@ -4,7 +4,7 @@
 
 
 ###### package.json
-`"react-native-bottom-sheet-alert": "https://github.com/sergeymild/react-native-bottom-sheet-alert"`
+`"react-native-bottom-alert": "sergeymild/react-native-bottom-alert"`
 
 `$ yarn`
 
