@@ -8,10 +8,10 @@ import com.facebook.react.uimanager.ViewManager
 
 class BottomAlertPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        return emptyList()
+        return listOf(BottomSheetAlertModule(reactContext))
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-        return listOf(BottomAlertViewManager())
+        return emptyList()
     }
 }

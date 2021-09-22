@@ -1,0 +1,36 @@
+package com.reactnativebottomalert
+
+import android.content.res.Configuration
+import com.facebook.react.bridge.*
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.lang.ref.WeakReference
+
+
+class BottomSheetAlertModule(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
+  private var previousDialog: WeakReference<BottomSheetDialog>? = null
+  override fun getName(): String {
+    return "BottomSheetAlert"
+  }
+
+  @ReactMethod
+  fun show(options: ReadableMap, actionCallback: Callback) {
+    if (previousDialog != null) {
+      val bottomSheetDialog = previousDialog!!.get()
+      bottomSheetDialog?.dismiss()
+      previousDialog!!.clear()
+    }
+
+    val currentNightMode = currentActivity!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    var isDarkMode = false
+    when (currentNightMode) {
+      Configuration.UI_MODE_NIGHT_NO -> isDarkMode = false
+      Configuration.UI_MODE_NIGHT_YES -> isDarkMode = true
+    }
+    println("+++++++ $isDarkMode")
+
+    val bottomSheetDialog: BottomSheetDialog = BottomSheetAlert(currentActivity!!, options).create(isDarkMode, actionCallback)
+      ?: return
+    previousDialog = WeakReference(bottomSheetDialog)
+    bottomSheetDialog.show()
+  }
+}

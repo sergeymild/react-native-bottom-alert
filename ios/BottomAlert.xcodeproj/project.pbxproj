@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-
-		5E555C0D2413F4C50049A1A2 /* BottomAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BottomAlert.m */; };
-		F4FF95D7245B92E800C19C63 /*  BottomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /*  BottomAlert.swift */; };
-
+		9277CD4026FA2D6100AFA0CF /* BottomAlertViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9277CD3E26FA2D6100AFA0CF /* BottomAlertViewManager.m */; };
+		9277CD4226FA2D6D00AFA0CF /* BottomSheetAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277CD4126FA2D6D00AFA0CF /* BottomSheetAlert.swift */; };
+		9277CD4426FA2D7A00AFA0CF /* BottomSheetAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277CD4326FA2D7A00AFA0CF /* BottomSheetAlertPresenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,11 +26,10 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libBottomAlert.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBottomAlert.a; sourceTree = BUILT_PRODUCTS_DIR; };
-
-		B3E7B5891CC2AC0600A0062D /* BottomAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomAlert.m; sourceTree = "<group>"; };
+		9277CD3E26FA2D6100AFA0CF /* BottomAlertViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomAlertViewManager.m; sourceTree = "<group>"; };
+		9277CD4126FA2D6D00AFA0CF /* BottomSheetAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetAlert.swift; sourceTree = "<group>"; };
+		9277CD4326FA2D7A00AFA0CF /* BottomSheetAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetAlertPresenter.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* BottomAlert-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BottomAlert-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* BottomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomAlert.swift; sourceTree = "<group>"; };
-
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,11 +54,10 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-
-				F4FF95D6245B92E800C19C63 /* BottomAlert.swift */,
-				B3E7B5891CC2AC0600A0062D /* BottomAlert.m */,
+				9277CD4126FA2D6D00AFA0CF /* BottomSheetAlert.swift */,
+				9277CD4326FA2D7A00AFA0CF /* BottomSheetAlertPresenter.swift */,
+				9277CD3E26FA2D6100AFA0CF /* BottomAlertViewManager.m */,
 				F4FF95D5245B92E700C19C63 /* BottomAlert-Bridging-Header.h */,
-
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,10 +119,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-
-				F4FF95D7245B92E800C19C63 /* BottomAlert.swift in Sources */,
-				B3E7B58A1CC2AC0600A0062D /* BottomAlert.m in Sources */,
-
+				9277CD4426FA2D7A00AFA0CF /* BottomSheetAlertPresenter.swift in Sources */,
+				9277CD4226FA2D6D00AFA0CF /* BottomSheetAlert.swift in Sources */,
+				9277CD4026FA2D6100AFA0CF /* BottomAlertViewManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,11 +234,9 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = BottomAlert;
 				SKIP_INSTALL = YES;
-
 				SWIFT_OBJC_BRIDGING_HEADER = "BottomAlert-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-
 			};
 			name = Debug;
 		};
@@ -259,10 +253,8 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = BottomAlert;
 				SKIP_INSTALL = YES;
-
 				SWIFT_OBJC_BRIDGING_HEADER = "BottomAlert-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-
 			};
 			name = Release;
 		};

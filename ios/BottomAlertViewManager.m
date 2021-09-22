@@ -1,7 +1,6 @@
-#import "React/RCTViewManager.h"
+#import "React/RCTBridgeModule.h"
 
-@interface RCT_EXTERN_MODULE(BottomAlertViewManager, RCTViewManager)
 
-RCT_EXPORT_VIEW_PROPERTY(color, NSString)
-
+@interface RCT_EXTERN_MODULE(BottomSheetAlert, NSObject)
+RCT_EXTERN_METHOD(show:(NSDictionary *)options callback:(RCTResponseSenderBlock)callback)
 @end

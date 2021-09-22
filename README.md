@@ -1,27 +1,23 @@
-# react-native-bottom-alert
+# react-native-bottom-sheet-alert
 
-React Native Bottom Alert
+## Getting started
 
-## Installation
 
-```sh
-npm install react-native-bottom-alert
-```
+###### package.json
+`"react-native-bottom-sheet-alert": "https://github.com/sergeymild/react-native-bottom-sheet-alert"`
+
+`$ yarn`
 
 ## Usage
+```typescript
+import {BottomSheetAlert} from 'react-native-bottom-sheet-alert';
 
-```js
-import BottomAlert from "react-native-bottom-alert";
-
-// ...
-
-const result = await BottomAlert.multiply(3, 7);
+BottomSheetAlert.show({
+  title?: string,
+  message?: string,
+  buttons: [
+    {text: string, style?: 'cancel' | 'destructive' | 'default', data?: any}
+  ]},
+  (selected: BottomSheetAlertButton) => console.log('ButtonPressed', selected)
+)
 ```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT

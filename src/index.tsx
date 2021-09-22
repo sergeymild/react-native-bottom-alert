@@ -1,12 +1,26 @@
-import { requireNativeComponent, ViewStyle } from 'react-native';
+import { NativeModules } from 'react-native';
 
-type BottomAlertProps = {
-  color: string;
-  style: ViewStyle;
-};
+export type BottomSheetAlertButtonStyle = 'default' | 'destructive' | 'cancel';
 
-export const BottomAlertViewManager = requireNativeComponent<BottomAlertProps>(
-'BottomAlertView'
-);
+export interface BottomSheetAlertButton {
+  readonly text: string;
+  readonly style?: BottomSheetAlertButtonStyle;
+  readonly data?: any;
+}
 
-export default BottomAlertViewManager;
+interface BottomSheetAlertProperties {
+  readonly title?: string;
+  readonly message?: string;
+  readonly buttons: BottomSheetAlertButton[];
+}
+
+type Callback = (selected: BottomSheetAlertButton) => void;
+
+export class BottomSheetAlert {
+  static show(properties: BottomSheetAlertProperties, callback: Callback) {
+    NativeModules.BottomSheetAlert.show(properties, (index: number) => {
+      const selected = properties.buttons[index];
+      callback(selected);
+    });
+  }
+}
