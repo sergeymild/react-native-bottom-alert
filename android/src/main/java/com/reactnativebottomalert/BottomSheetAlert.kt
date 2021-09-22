@@ -78,7 +78,7 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       val isDestructive = style != null && style == "destructive"
       var color = if (isDark) Color.WHITE else Color.BLACK
       if (isDestructive) {
-        color = if (isDark) Color.argb((255 * 0.4).toInt(), 176, 0, 32) else Color.rgb(176, 0, 32)
+        color = if (isDark) Color.argb((255 * 0.8).toInt(), 176, 0, 32) else Color.rgb(176, 0, 32)
       }
       val listItemView = BottomSheetListItemView(context, i, text, color, false)
       listItemView.setOnClickListener(clickListener)
