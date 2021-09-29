@@ -22,11 +22,14 @@ class BottomSheetAlertModule(reactContext: ReactApplicationContext?) : ReactCont
 
     val currentNightMode = currentActivity!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
     var isDarkMode = false
-    when (currentNightMode) {
-      Configuration.UI_MODE_NIGHT_NO -> isDarkMode = false
-      Configuration.UI_MODE_NIGHT_YES -> isDarkMode = true
+    if (!options.hasKey("theme")) {
+      when (currentNightMode) {
+        Configuration.UI_MODE_NIGHT_NO -> isDarkMode = false
+        Configuration.UI_MODE_NIGHT_YES -> isDarkMode = true
+      }
+    } else {
+      isDarkMode = options.getString("theme") == "dark"
     }
-    println("+++++++ $isDarkMode")
 
     val bottomSheetDialog: BottomSheetDialog = BottomSheetAlert(currentActivity!!, options).create(isDarkMode, actionCallback)
       ?: return

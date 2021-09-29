@@ -15,7 +15,7 @@ class AppAlertController: UIAlertController {
     deinit {
         onDismiss?()
         onDismiss = nil
-        debugPrint("_____+++++")
+        debugPrint("deinit AppAlertController")
     }
 }
 
@@ -37,6 +37,14 @@ class BottomSheetAlertPresenter {
     func present(options: NSDictionary, callback: @escaping RCTResponseSenderBlock) {
         strongSelf = self
         createAlertWindow()
+        
+        var isDark = false
+        if #available(iOS 12.0, *) {
+            isDark = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        }
+        if let theme = options["theme"] as? String {
+            isDark = theme == "dark"
+        }
         
         let completion = { [weak self] in
             guard let self = self else { return }
@@ -68,6 +76,9 @@ class BottomSheetAlertPresenter {
                 previousBottomSheet = alert
             }
             guard let controller = self.alertWindow?.rootViewController else { return }
+            if #available(iOS 13.0, *) {
+                alert.overrideUserInterfaceStyle = isDark ? .dark : .light
+            }
             controller.present(alert, animated: true)
             alert.onDismiss = { [weak self] in
                 debugPrint("didDismiss")

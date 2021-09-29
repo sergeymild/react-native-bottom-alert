@@ -9,6 +9,7 @@ export default function App() {
   useEffect(() => {
     BottomSheetAlert.show(
       {
+        theme: 'dark',
         title: 'Are you sure want delete all data?',
         message: 'Awesome message',
         buttons: [

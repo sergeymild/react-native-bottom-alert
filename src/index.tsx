@@ -12,6 +12,7 @@ interface BottomSheetAlertProperties {
   readonly title?: string;
   readonly message?: string;
   readonly buttons: BottomSheetAlertButton[];
+  readonly theme?: 'light' | 'dark';
 }
 
 type Callback = (selected: BottomSheetAlertButton) => void;
