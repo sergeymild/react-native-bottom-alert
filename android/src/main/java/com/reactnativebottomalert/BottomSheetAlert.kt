@@ -2,16 +2,16 @@ package com.reactnativebottomalert
 
 import android.app.Activity
 import android.graphics.Color
-import android.graphics.Outline
+import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewOutlineProvider
-import com.facebook.react.bridge.ReadableMap
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.core.widget.NestedScrollView
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.ReadableMap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class BottomSheetAlert(private val context: Activity, private val options: ReadableMap) {
   private val density = context.resources.displayMetrics.density
@@ -24,16 +24,18 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
     val baseLayout = LinearLayout(context)
 
     baseLayout.orientation = LinearLayout.VERTICAL
+    baseLayout.clipChildren = false
+    baseLayout.clipToPadding = false
+    baseLayout.setPadding(0, 0, 0, (density * 16).toInt())
     baseLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).also {
-      it.bottomMargin = (density * 16).toInt()
       it.marginEnd = (density * 16).toInt()
       it.marginStart = (density * 16).toInt()
     }
 
-    val buttonsContainer = LinearLayout(context)
-    buttonsContainer.setBackgroundColor(backgroundColor)
+    val buttonsContainer = LayoutInflater.from(context).inflate(R.layout.base_layout, baseLayout, false) as CardView
+    buttonsContainer.setCardBackgroundColor(backgroundColor)
+    val verticalContainer = buttonsContainer.findViewById<LinearLayout>(R.id.vertical_container)
 
-    buttonsContainer.orientation = LinearLayout.VERTICAL
     val buttons = options.getArray("buttons") ?: return null
     val hasHeader = options.hasKey("title") || options.hasKey("message")
     val layoutParams = LinearLayout.LayoutParams(
@@ -41,24 +43,14 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       LinearLayout.LayoutParams.WRAP_CONTENT
     )
     if (hasHeader) {
-      val header = BottomSheetHeader(
-        context,
+      val header = LayoutInflater.from(context).inflate(R.layout.sheet_header, baseLayout, false) as BottomSheetHeader
+      header.configure(
         options.getString("title"),
         options.getString("message"),
         isDark
       )
-      header.outlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View, outline: Outline) {
-          val left = 0
-          val top = 0;
-          val right = view.width
-          val bottom = view.height
-          val cornerRadius = density * 20
-          outline.setRoundRect(left, top, right, (bottom + cornerRadius).toInt(), cornerRadius)
-        }
-      }
       header.setBackgroundColor(backgroundColor)
-      baseLayout.addView(header, layoutParams)
+      verticalContainer.addView(header)
     }
     val clickListener = View.OnClickListener { v: View ->
       val tag = v.tag as Int
@@ -80,69 +72,33 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       if (isDestructive) {
         color = if (isDark) Color.argb((255 * 0.8).toInt(), 176, 0, 32) else Color.rgb(176, 0, 32)
       }
-      val listItemView = BottomSheetListItemView(context, i, text, color, false)
+      val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_button, verticalContainer, false) as TextView
+      listItemView.tag = i
+      listItemView.setTextColor(color)
+      listItemView.text = text
       listItemView.setOnClickListener(clickListener)
-      buttonsContainer.addView(listItemView, layoutParams)
+      verticalContainer.addView(listItemView, layoutParams)
     }
 
-    buttonsContainer.outlineProvider = object : ViewOutlineProvider() {
-      override fun getOutline(view: View, outline: Outline) {
-        val left = 0
-        val top = 0;
-        val right = view.width
-        val bottom = view.height
-        val cornerRadius = density * 20
-        if (hasHeader || cancelButtonIndex != -1) {
-          outline.setRoundRect(left, (top - cornerRadius).toInt(), right, bottom, cornerRadius)
-        } else {
-          outline.setRoundRect(left, top, right, bottom, cornerRadius)
-        }
-      }
-    }
-    buttonsContainer.clipToOutline = true
     baseLayout.addView(buttonsContainer)
 
     if (cancelButtonIndex != -1) {
       val readableMap = buttons.getMap(cancelButtonIndex)
       val text = readableMap!!.getString("text")
       val color = if (isDark) Color.WHITE else Color.BLACK
-      val listItemView = BottomSheetListItemView(context, cancelButtonIndex, text, color, true)
+      val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_cancel_button, baseLayout, false) as CardView
+      val titleView = listItemView.findViewById<TextView>(R.id.title)
+      titleView.setTextColor(color)
+      titleView.text = text
+      listItemView.tag = cancelButtonIndex
       listItemView.setOnClickListener(clickListener)
-      listItemView.setBackgroundColor(backgroundColor)
-      baseLayout.addView(listItemView, LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT
-      ).also {
-        it.topMargin = (density * 16).toInt()
-      })
-
-      listItemView.outlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View, outline: Outline) {
-          val left = 0
-          val top = 0;
-          val right = view.width
-          val bottom = view.height
-          val cornerRadius = density * 20
-          outline.setRoundRect(left, top, right, bottom, cornerRadius)
-        }
-      }
-      listItemView.clipToOutline = true
+      listItemView.setCardBackgroundColor(backgroundColor)
+      baseLayout.addView(listItemView)
     }
 
     dialog.setContentView(baseLayout)
     val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
     bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-    baseLayout.outlineProvider = object : ViewOutlineProvider() {
-      override fun getOutline(view: View, outline: Outline) {
-        val left = 0
-        val top = 0;
-        val right = view.width
-        val bottom = view.height
-        val cornerRadius = density * 20
-        outline.setRoundRect(left, top, right, (bottom + cornerRadius).toInt(), cornerRadius)
-      }
-    }
-    baseLayout.clipToOutline = true
     return dialog
   }
 

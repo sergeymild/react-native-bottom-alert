@@ -11,17 +11,16 @@ export default function App() {
       {
         theme: 'dark',
         title: 'Are you sure want delete all data?',
-        message: 'Awesome message',
         buttons: [
-          { text: 'Sign Out', style: 'default' },
-          { text: 'Sign Out', style: 'destructive' },
+          { text: 'Ok', style: 'default', data: 'ok' },
+          { text: 'None', style: 'destructive', data: 'none' },
 
-          { text: 'Cancel', style: 'cancel' },
+          { text: 'Cancel', style: 'cancel', data: 'cancel' },
         ],
       },
       (selected: BottomSheetAlertButton) => {
         if (selected.style === 'cancel') return;
-        console.log('-======');
+        console.log('-======', selected.data);
       }
     );
   });
