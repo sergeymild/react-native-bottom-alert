@@ -15,13 +15,15 @@ interface BottomSheetAlertProperties {
   readonly theme?: 'light' | 'dark';
 }
 
-type Callback = (selected: BottomSheetAlertButton) => void;
-
 export class BottomSheetAlert {
-  static show(properties: BottomSheetAlertProperties, callback: Callback) {
-    NativeModules.BottomSheetAlert.show(properties, (index: number) => {
-      const selected = properties.buttons[index];
-      callback(selected);
+  static show(
+    properties: BottomSheetAlertProperties
+  ): Promise<BottomSheetAlertButton> {
+    return new Promise((resolve) => {
+      NativeModules.BottomSheetAlert.show(properties, (index: number) => {
+        const selected = properties.buttons[index];
+        resolve(selected);
+      });
     });
   }
 }
