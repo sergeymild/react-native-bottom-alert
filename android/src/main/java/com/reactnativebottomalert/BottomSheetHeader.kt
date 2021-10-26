@@ -40,7 +40,7 @@ class BottomSheetHeader(context: Context, attrs: AttributeSet?): LinearLayout(co
     if (isDark) color = Color.argb((255 * 0.6).toInt(), 225, 225, 225)
     borderPaint.color = Color.parseColor("#F4F4F4")
     if (isDark) borderPaint.color = Color.parseColor("#2E2E2E")
-    addTitle(title, color, this)
+    addTitle(title, if (isDark) Color.WHITE else Color.BLACK, this)
     addMessage(message, color, this)
     setWillNotDraw(false)
   }
