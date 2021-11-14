@@ -4,7 +4,7 @@
 
 
 ###### package.json
-`"react-native-bottom-alert": "sergeymild/react-native-bottom-alert"`
+`"react-native-bottom-alert": "sergeymild/react-native-bottom-alert#0.6.0"`
 
 `$ yarn`
 
