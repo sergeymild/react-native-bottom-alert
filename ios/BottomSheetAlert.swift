@@ -21,7 +21,7 @@ class BottomSheetAlert: NSObject, RCTBridgeModule {
   
   @objc
   func show(_ options: NSDictionary, callback: @escaping RCTResponseSenderBlock) {
-    DispatchQueue.main.asyncAfter(deadline: .now()) {
+    DispatchQueue.main.async {
       BottomSheetAlertPresenter().present(options: options, callback: callback)
     }
   }

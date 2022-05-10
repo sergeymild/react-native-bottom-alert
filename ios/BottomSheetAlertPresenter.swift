@@ -71,6 +71,7 @@ class BottomSheetAlertPresenter {
                 }
                 
                 alert.addAction(.init(title: button["text"] as? String, style: style, handler: { _ in
+                    debugPrint("cancel")
                     callback([i])
                 }))
                 previousBottomSheet = alert

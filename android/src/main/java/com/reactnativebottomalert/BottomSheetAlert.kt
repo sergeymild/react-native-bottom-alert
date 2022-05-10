@@ -28,6 +28,7 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
     val dialog = BottomSheetDialog(context)
     dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+
     val baseLayout = LinearLayout(context)
 
     baseLayout.orientation = LinearLayout.VERTICAL
@@ -67,12 +68,6 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       val tag = v.tag as Int
       dialog.dismiss()
       actionCallback.invoke(Arguments.fromList(listOf(tag)))
-    }
-
-    dialog.setOnDismissListener {
-      if (resolved) return@setOnDismissListener
-      resolved = true
-      actionCallback.invoke(Arguments.fromList(listOf(-1)))
     }
 
     var cancelButtonIndex = -1
@@ -120,6 +115,12 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       listItemView.setOnClickListener(clickListener)
       listItemView.setCardBackgroundColor(backgroundColor)
       baseLayout.addView(listItemView)
+    }
+
+    dialog.setOnDismissListener {
+      if (resolved) return@setOnDismissListener
+      resolved = true
+      actionCallback.invoke(Arguments.fromList(listOf(cancelButtonIndex)))
     }
 
     dialog.setContentView(baseLayout)
