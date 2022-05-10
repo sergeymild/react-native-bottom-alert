@@ -1,20 +1,27 @@
 package com.reactnativebottomalert
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReadableMap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.net.URI
 
 class BottomSheetAlert(private val context: Activity, private val options: ReadableMap) {
   private val density = context.resources.displayMetrics.density
+  @SuppressLint("RestrictedApi")
   fun create(isDark: Boolean, actionCallback: Callback): BottomSheetDialog? {
     val backgroundColor = if (isDark) Color.parseColor("#121212") else Color.WHITE
 
@@ -52,16 +59,28 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       header.setBackgroundColor(backgroundColor)
       verticalContainer.addView(header)
     }
+
+    var resolved = false
     val clickListener = View.OnClickListener { v: View ->
+      if (resolved) return@OnClickListener
+      resolved = true
       val tag = v.tag as Int
       dialog.dismiss()
       actionCallback.invoke(Arguments.fromList(listOf(tag)))
     }
+
+    dialog.setOnDismissListener {
+      if (resolved) return@setOnDismissListener
+      resolved = true
+      actionCallback.invoke(Arguments.fromList(listOf(-1)))
+    }
+
     var cancelButtonIndex = -1
     for (i in 0 until buttons.size()) {
       val readableMap = buttons.getMap(i)
       val style = readableMap!!.getString("style")
       val text = readableMap.getString("text")
+      val icon = getIcon(context, readableMap.getString("icon"))
       val isCancel = style != null && style == "cancel"
       if (isCancel) {
         cancelButtonIndex = i
@@ -72,10 +91,17 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       if (isDestructive) {
         color = if (isDark) Color.argb((255 * 0.8).toInt(), 176, 0, 32) else Color.rgb(176, 0, 32)
       }
-      val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_button, verticalContainer, false) as TextView
+      val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_button, verticalContainer, false) as LinearLayout
+      val titleView = listItemView.findViewById<TextView>(R.id.title)
+      val iconView = listItemView.findViewById<AppCompatImageView>(R.id.icon)
+      if (icon != null) {
+        iconView.visibility = View.VISIBLE
+        iconView.setImageBitmap(icon)
+        iconView.supportImageTintList = ColorStateList.valueOf(color)
+      }
       listItemView.tag = i
-      listItemView.setTextColor(color)
-      listItemView.text = text
+      titleView.setTextColor(color)
+      titleView.text = text
       listItemView.setOnClickListener(clickListener)
       verticalContainer.addView(listItemView, layoutParams)
     }
@@ -102,4 +128,18 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
     return dialog
   }
 
+}
+
+
+fun getIcon(activity: Activity, source: String?): Bitmap? {
+  source ?: return null
+  val resourceId: Int =
+    activity.resources.getIdentifier(source, "drawable", activity.packageName)
+
+  return if (resourceId == 0) {
+    val uri = URI(source)
+    BitmapFactory.decodeStream(uri.toURL().openConnection().getInputStream())
+  } else {
+    BitmapFactory.decodeResource(activity.resources, resourceId)
+  }
 }

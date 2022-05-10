@@ -10,12 +10,18 @@ export default function App() {
       theme: 'dark',
       title: 'Are you sure want delete all data?',
       buttons: [
-        { text: 'Ok', style: 'default', data: 'ok' },
+        {
+          text: 'Ok',
+          style: 'default',
+          data: 'ok',
+          icon: require('../assets/icSettings.png'),
+        },
         { text: 'None', style: 'destructive', data: 'none' },
 
         { text: 'Cancel', style: 'cancel', data: 'cancel' },
       ],
     }).then((selected) => {
+      if (!selected) return console.log('undefined');
       if (selected.style === 'cancel') return;
       console.log('-======', selected.data);
     });
@@ -29,12 +35,23 @@ export default function App() {
             title: 'Are you sure want delete all data?',
             message: 'Awesome message',
             buttons: [
-              { text: 'Ok', style: 'default', data: 'ok' },
-              { text: 'None', style: 'destructive', data: 'none' },
+              {
+                text: 'Ok',
+                style: 'default',
+                data: 'ok',
+                icon: require('../assets/icSettings.png'),
+              },
+              {
+                text: 'None',
+                style: 'destructive',
+                data: 'none',
+                icon: require('../assets/icViews.png'),
+              },
 
               { text: 'Cancel', style: 'cancel', data: 'cancel' },
             ],
           });
+          if (!selected) return;
           if (selected.style === 'cancel') return;
           console.log('-======', selected.data);
         }}

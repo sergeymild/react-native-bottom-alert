@@ -17,7 +17,7 @@ class BottomSheetAlertModule(reactContext: ReactApplicationContext?) : ReactCont
     if (previousDialog != null) {
       val bottomSheetDialog = previousDialog!!.get()
       bottomSheetDialog?.dismiss()
-      previousDialog!!.clear()
+      previousDialog?.clear()
     }
 
     val currentNightMode = currentActivity!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
