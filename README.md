@@ -12,12 +12,27 @@
 ```typescript
 import {BottomSheetAlert} from 'react-native-bottom-sheet-alert';
 
-BottomSheetAlert.show({
-  title?: string,
-  message?: string,
-  buttons: [
-    {text: string, style?: 'cancel' | 'destructive' | 'default', data?: any}
-  ]},
-  (selected: BottomSheetAlertButton) => console.log('ButtonPressed', selected)
-)
+export interface BottomSheetAlertButton {
+  readonly text: string;
+  readonly style?: BottomSheetAlertButtonStyle;
+  readonly data?: any;
+  // supported only on Android
+  readonly icon?: ImageRequireSource;
+}
+
+interface BottomSheetAlertProperties {
+  readonly title?: string;
+  readonly message?: string;
+  readonly buttons: BottomSheetAlertButton[];
+  readonly theme?: 'light' | 'dark';
+}
+// show method signature
+show(properties: BottomSheetAlertProperties): Promise<BottomSheetAlertButton | undefined>
+
+const selected = await BottomSheetAlert.show({
+  title? : string,
+  message? : string,
+  buttons: []
+})
+if (selected === undefined) return
 ```
