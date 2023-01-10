@@ -2,6 +2,7 @@ package com.reactnativebottomalert
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,10 +15,16 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.ColorPropConverter
 import com.facebook.react.bridge.ReadableMap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.net.URI
+
+fun color(options: ReadableMap, context: Context, key: String, default: Int): Int {
+  if (!options.hasKey(key)) return default
+  return ColorPropConverter.getColor(options.getDouble(key), context)
+}
 
 class BottomSheetAlert(private val context: Activity, private val options: ReadableMap) {
   private val density = context.resources.displayMetrics.density
@@ -70,6 +77,8 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       actionCallback.invoke(Arguments.fromList(listOf(tag)))
     }
 
+    val tintColor = color(options, context, "tintColor", if (isDark) Color.WHITE else Color.BLACK)
+
     var cancelButtonIndex = -1
     for (i in 0 until buttons.size()) {
       val readableMap = buttons.getMap(i)
@@ -82,7 +91,7 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
         continue
       }
       val isDestructive = style != null && style == "destructive"
-      var color = if (isDark) Color.WHITE else Color.BLACK
+      var color = tintColor
       if (isDestructive) {
         color = if (isDark) Color.argb((255 * 0.8).toInt(), 176, 0, 32) else Color.rgb(176, 0, 32)
       }

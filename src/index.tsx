@@ -1,4 +1,4 @@
-import { Image, ImageRequireSource, NativeModules } from 'react-native';
+import { Image, ImageRequireSource, NativeModules, processColor } from "react-native";
 
 export type BottomSheetAlertButtonStyle = 'default' | 'destructive' | 'cancel';
 
@@ -14,6 +14,7 @@ interface BottomSheetAlertProperties {
   readonly message?: string;
   readonly buttons: BottomSheetAlertButton[];
   readonly theme?: 'light' | 'dark';
+  readonly tintColor?: string
 }
 
 export class BottomSheetAlert {
@@ -24,6 +25,7 @@ export class BottomSheetAlert {
       NativeModules.BottomSheetAlert.show(
         {
           ...properties,
+          tintColor: properties.tintColor ? processColor(properties.tintColor) : undefined,
           buttons: properties.buttons.map((b) => ({
             ...b,
             icon: b.icon ? Image.resolveAssetSource(b.icon).uri : undefined,
