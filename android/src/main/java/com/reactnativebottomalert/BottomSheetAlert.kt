@@ -144,10 +144,9 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       var color = if (isDark) Color.WHITE else Color.BLACK
       color = color(appearance, context, "color", color)
       val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_cancel_button, baseLayout, false) as CardView
-      val cardView = listItemView.findViewById<CardView>(R.id.cancel_button)
       val titleView = listItemView.findViewById<TextView>(R.id.title)
       if (options.hasKey("cancelButtonBorderRadius")) {
-        cardView.radius = options.getDouble("cancelButtonBorderRadius").toFloat()
+        listItemView.radius = options.getDouble("cancelButtonBorderRadius").toFloat()
       }
       titleView.setTextColor(color)
       titleView.applyTextStyle(appearance)

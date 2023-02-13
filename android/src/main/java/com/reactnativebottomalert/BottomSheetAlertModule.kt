@@ -1,59 +1,39 @@
 package com.reactnativebottomalert
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.util.AttributeSet
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.annotation.ColorInt
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.uimanager.PixelUtil
+import android.content.res.Configuration
+import com.facebook.react.bridge.*
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.lang.ref.WeakReference
 
-@SuppressLint("ViewConstructor")
-class BottomSheetHeader(context: Context, attrs: AttributeSet?): LinearLayout(context, attrs) {
-  private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-  private fun addTitle(
-    title: ReadableMap?,
-    @ColorInt color: Int,
-    layout: LinearLayout
-  ) {
-    if (title == null) return
-    val textView = layout.findViewById<TextView>(R.id.title)
-    textView.text = title.getString("text")
-    textView.applyTextStyle(title.getMap("appearance"))
-    textView.visibility = View.VISIBLE
-    textView.setTextColor(color(title.getMap("appearance"), context, "color", color))
+
+class BottomSheetAlertModule(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
+  private var previousDialog: WeakReference<BottomSheetDialog>? = null
+  override fun getName(): String {
+    return "BottomSheetAlert"
   }
 
-  private fun addMessage(title: ReadableMap?, @ColorInt color: Int, layout: LinearLayout) {
-    if (title == null) return
-    val textView = layout.findViewById<TextView>(R.id.message)
-    textView.text = title.getString("text")
-    textView.applyTextStyle(title.getMap("appearance"))
-    textView.visibility = View.VISIBLE
-    textView.setTextColor(color(title.getMap("appearance"), context, "color", color))
-  }
+  @ReactMethod
+  fun show(options: ReadableMap, actionCallback: Callback) {
+    if (previousDialog != null) {
+      val bottomSheetDialog = previousDialog!!.get()
+      bottomSheetDialog?.dismiss()
+      previousDialog?.clear()
+    }
 
-  fun configure(
-    title: ReadableMap?,
-    message: ReadableMap?,
-    isDark: Boolean
-  ) {
-    var color = Color.LTGRAY
-    if (isDark) color = Color.argb((255 * 0.6).toInt(), 225, 225, 225)
-    borderPaint.color = Color.parseColor("#F4F4F4")
-    if (isDark) borderPaint.color = Color.parseColor("#2E2E2E")
-    addTitle(title, if (isDark) Color.WHITE else Color.BLACK, this)
-    addMessage(message, color, this)
-    setWillNotDraw(false)
-  }
+    val currentNightMode = currentActivity!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    var isDarkMode = false
+    if (!options.hasKey("theme")) {
+      when (currentNightMode) {
+        Configuration.UI_MODE_NIGHT_NO -> isDarkMode = false
+        Configuration.UI_MODE_NIGHT_YES -> isDarkMode = true
+      }
+    } else {
+      isDarkMode = options.getString("theme") == "dark"
+    }
 
-  override fun onDraw(canvas: Canvas) {
-    super.onDraw(canvas)
-    canvas.drawLine(0f, height - PixelUtil.toDIPFromPixel(1f), width.toFloat(), height.toFloat(), borderPaint)
+    val bottomSheetDialog: BottomSheetDialog = BottomSheetAlert(currentActivity!!, options).create(isDarkMode, actionCallback)
+      ?: return
+    previousDialog = WeakReference(bottomSheetDialog)
+    bottomSheetDialog.show()
   }
 }

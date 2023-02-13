@@ -10,30 +10,37 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.PixelUtil
 
 @SuppressLint("ViewConstructor")
 class BottomSheetHeader(context: Context, attrs: AttributeSet?): LinearLayout(context, attrs) {
   private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-  private fun addTitle(text: String?, @ColorInt color: Int, layout: LinearLayout) {
-    if (text == null) return
+  private fun addTitle(
+    title: ReadableMap?,
+    @ColorInt color: Int,
+    layout: LinearLayout
+  ) {
+    if (title == null) return
     val textView = layout.findViewById<TextView>(R.id.title)
-    textView.text = text
+    textView.text = title.getString("text")
+    textView.applyTextStyle(title.getMap("appearance"))
     textView.visibility = View.VISIBLE
-    textView.setTextColor(color)
+    textView.setTextColor(color(title.getMap("appearance"), context, "color", color))
   }
 
-  private fun addMessage(text: String?, @ColorInt color: Int, layout: LinearLayout) {
-    if (text == null) return
+  private fun addMessage(title: ReadableMap?, @ColorInt color: Int, layout: LinearLayout) {
+    if (title == null) return
     val textView = layout.findViewById<TextView>(R.id.message)
-    textView.text = text
+    textView.text = title.getString("text")
+    textView.applyTextStyle(title.getMap("appearance"))
     textView.visibility = View.VISIBLE
-    textView.setTextColor(color)
+    textView.setTextColor(color(title.getMap("appearance"), context, "color", color))
   }
 
   fun configure(
-    title: String?,
-    message: String?,
+    title: ReadableMap?,
+    message: ReadableMap?,
     isDark: Boolean
   ) {
     var color = Color.LTGRAY
