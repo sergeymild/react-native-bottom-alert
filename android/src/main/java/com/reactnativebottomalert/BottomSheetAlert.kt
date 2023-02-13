@@ -7,6 +7,8 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Typeface
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -19,11 +21,26 @@ import com.facebook.react.bridge.ColorPropConverter
 import com.facebook.react.bridge.ReadableMap
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.resources.TextAppearance
 import java.net.URI
 
-fun color(options: ReadableMap, context: Context, key: String, default: Int): Int {
+fun color(options: ReadableMap?, context: Context, key: String, default: Int): Int {
+  if (options == null) return default
   if (!options.hasKey(key)) return default
   return ColorPropConverter.getColor(options.getDouble(key), context)
+}
+
+
+fun TextView.applyTextStyle(appearance: ReadableMap?) {
+  appearance?.getDouble("fontSize")?.let {
+    this.textSize = it.toFloat()
+  }
+  appearance?.getString("textAlign")?.let {
+    if (it == "center") this.gravity = Gravity.CENTER
+  }
+  appearance?.getString("fontFamily")?.let {
+    this.typeface = Typeface.createFromAsset(context.assets, "fonts/$it")
+  }
 }
 
 class BottomSheetAlert(private val context: Activity, private val options: ReadableMap) {
@@ -49,6 +66,11 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
 
     val buttonsContainer = LayoutInflater.from(context).inflate(R.layout.base_layout, baseLayout, false) as CardView
     buttonsContainer.setCardBackgroundColor(backgroundColor)
+
+    if (options.hasKey("buttonsBorderRadius")) {
+      buttonsContainer.radius = options.getDouble("buttonsBorderRadius").toFloat()
+    }
+
     val verticalContainer = buttonsContainer.findViewById<LinearLayout>(R.id.vertical_container)
 
     val buttons = options.getArray("buttons") ?: return null
@@ -60,8 +82,8 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
     if (hasHeader) {
       val header = LayoutInflater.from(context).inflate(R.layout.sheet_header, baseLayout, false) as BottomSheetHeader
       header.configure(
-        options.getString("title"),
-        options.getString("message"),
+        options.getMap("title"),
+        options.getMap("message"),
         isDark
       )
       header.setBackgroundColor(backgroundColor)
@@ -82,7 +104,8 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
     var cancelButtonIndex = -1
     for (i in 0 until buttons.size()) {
       val readableMap = buttons.getMap(i)
-      val style = readableMap!!.getString("style")
+      val appearance = readableMap.getMap("appearance")
+      val style = readableMap.getString("style")
       val text = readableMap.getString("text")
       val icon = getIcon(context, readableMap.getString("icon"))
       val isCancel = style != null && style == "cancel"
@@ -91,12 +114,14 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
         continue
       }
       val isDestructive = style != null && style == "destructive"
-      var color = tintColor
+      var color = color(appearance, context, "color", tintColor)
       if (isDestructive) {
         color = if (isDark) Color.argb((255 * 0.8).toInt(), 176, 0, 32) else Color.rgb(176, 0, 32)
       }
       val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_button, verticalContainer, false) as LinearLayout
       val titleView = listItemView.findViewById<TextView>(R.id.title)
+      titleView.applyTextStyle(appearance)
+
       val iconView = listItemView.findViewById<AppCompatImageView>(R.id.icon)
       if (icon != null) {
         iconView.visibility = View.VISIBLE
@@ -114,11 +139,18 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
 
     if (cancelButtonIndex != -1) {
       val readableMap = buttons.getMap(cancelButtonIndex)
-      val text = readableMap!!.getString("text")
-      val color = if (isDark) Color.WHITE else Color.BLACK
+      val appearance = readableMap.getMap("appearance")
+      val text = readableMap.getString("text")
+      var color = if (isDark) Color.WHITE else Color.BLACK
+      color = color(appearance, context, "color", color)
       val listItemView = LayoutInflater.from(context).inflate(R.layout.sheet_cancel_button, baseLayout, false) as CardView
+      val cardView = listItemView.findViewById<CardView>(R.id.cancel_button)
       val titleView = listItemView.findViewById<TextView>(R.id.title)
+      if (options.hasKey("cancelButtonBorderRadius")) {
+        cardView.radius = options.getDouble("cancelButtonBorderRadius").toFloat()
+      }
       titleView.setTextColor(color)
+      titleView.applyTextStyle(appearance)
       titleView.text = text
       listItemView.tag = cancelButtonIndex
       listItemView.setOnClickListener(clickListener)
