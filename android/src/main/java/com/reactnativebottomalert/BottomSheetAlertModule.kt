@@ -14,26 +14,29 @@ class BottomSheetAlertModule(reactContext: ReactApplicationContext?) : ReactCont
 
   @ReactMethod
   fun show(options: ReadableMap, actionCallback: Callback) {
-    if (previousDialog != null) {
-      val bottomSheetDialog = previousDialog!!.get()
-      bottomSheetDialog?.dismiss()
-      previousDialog?.clear()
-    }
-
-    val currentNightMode = currentActivity!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-    var isDarkMode = false
-    if (!options.hasKey("theme")) {
-      when (currentNightMode) {
-        Configuration.UI_MODE_NIGHT_NO -> isDarkMode = false
-        Configuration.UI_MODE_NIGHT_YES -> isDarkMode = true
+    val activity = currentActivity ?: return
+    activity.runOnUiThread {
+      if (previousDialog != null) {
+        val bottomSheetDialog = previousDialog!!.get()
+        bottomSheetDialog?.dismiss()
+        previousDialog?.clear()
       }
-    } else {
-      isDarkMode = options.getString("theme") == "dark"
-    }
 
-    val bottomSheetDialog: BottomSheetDialog = BottomSheetAlert(currentActivity!!, options).create(isDarkMode, actionCallback)
-      ?: return
-    previousDialog = WeakReference(bottomSheetDialog)
-    bottomSheetDialog.show()
+      val currentNightMode = currentActivity!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+      var isDarkMode = false
+      if (!options.hasKey("theme")) {
+        when (currentNightMode) {
+          Configuration.UI_MODE_NIGHT_NO -> isDarkMode = false
+          Configuration.UI_MODE_NIGHT_YES -> isDarkMode = true
+        }
+      } else {
+        isDarkMode = options.getString("theme") == "dark"
+      }
+
+      val bottomSheetDialog: BottomSheetDialog = BottomSheetAlert(currentActivity!!, options).create(isDarkMode, actionCallback)
+        ?: return@runOnUiThread
+      previousDialog = WeakReference(bottomSheetDialog)
+      bottomSheetDialog.show()
+    }
   }
 }
