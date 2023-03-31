@@ -56,7 +56,7 @@ class BottomSheetAlertPresenter {
                 preferredStyle: .actionSheet
             )
             
-            alert.view.tintColor = RCTConvert.uiColor(options["tintColor"])
+            alert.view.tintColor = RCTConvert.uiColor(options["iosTintColor"])
 
             let buttons = options["buttons"] as? Array<NSDictionary> ?? []
             if buttons.isEmpty { return }

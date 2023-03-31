@@ -4,7 +4,7 @@
 
 
 ###### package.json
-`"react-native-bottom-alert": "sergeymild/react-native-bottom-alert#0.8.2"`
+`"react-native-bottom-alert": "sergeymild/react-native-bottom-alert#0.8.3"`
 
 `$ yarn`
 
@@ -23,6 +23,7 @@ export interface BottomSheetAlertButton {
 }
 
 interface BottomSheetAlertProperties {
+  iosTintColor?: string,
   readonly title?: {
     text: string;
     readonly appearance?: Appearance
