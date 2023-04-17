@@ -8,6 +8,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -95,7 +97,7 @@ class BottomSheetAlert(private val context: Activity, private val options: Reada
       if (resolved) return@OnClickListener
       resolved = true
       val tag = v.tag as Int
-      dialog.dismiss()
+      Handler(Looper.getMainLooper()).post { dialog.dismiss() }
       actionCallback.invoke(Arguments.fromList(listOf(tag)))
     }
 

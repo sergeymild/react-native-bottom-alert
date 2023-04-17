@@ -14,8 +14,7 @@ class BottomSheetAlertModule(reactContext: ReactApplicationContext?) : ReactCont
 
   @ReactMethod
   fun show(options: ReadableMap, actionCallback: Callback) {
-    val activity = currentActivity ?: return
-    activity.runOnUiThread {
+    currentActivity?.runOnUiThread {
       if (previousDialog != null) {
         val bottomSheetDialog = previousDialog!!.get()
         bottomSheetDialog?.dismiss()
