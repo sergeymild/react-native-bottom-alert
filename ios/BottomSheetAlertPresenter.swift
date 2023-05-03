@@ -50,9 +50,11 @@ class BottomSheetAlertPresenter {
             guard let self = self else { return }
             previousBottomSheet = nil
             
+            let titleOptions = options["title"] as? [String: Any]
+            let messageOptions = options["message"] as? [String: Any]
             let alert = AppAlertController(
-                title: options["title"] as? String,
-                message: options["message"] as? String,
+                title: titleOptions != nil ? titleOptions!["text"] as? String : nil,
+                message: messageOptions != nil ? messageOptions!["text"] as? String : nil,
                 preferredStyle: .actionSheet
             )
             
